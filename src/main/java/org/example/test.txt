@@ -1,0 +1,11 @@
+root {
+    src {
+        test.txt
+    }
+    pom.xml
+    script {
+       npm {
+           dependencies 'nodemon,express'
+      }
+    }
+}

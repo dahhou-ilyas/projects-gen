@@ -1,43 +1,43 @@
 grammar ProjectGrammar;
 
-project: 'project:' NEWLINE INDENT1 project_details;
+project
+    : 'root' '{' (directory | file)* scriptSection? '}'
+    ;
 
-project_details: name language version structure dependencies scripts;
 
-name: 'name:' WS STRING NEWLINE;
+directory
+    : IDENTIFIER '{' (directory | file)* '}'
+    ;
 
-language: 'language:' WS STRING NEWLINE;
+file
+    : FILENAME
+    ;
 
-version: 'version:' WS QUOTED_STRING NEWLINE;
+scriptSection
+    : 'script' '{' npmSection '}'
+    ;
 
-structure: 'structure:' NEWLINE (INDENT2 (folder | file))+;
+npmSection
+    : 'npm' '{' dependencies '}'
+    ;
 
-folder: '- folder:' WS STRING NEWLINE INDENT3 'files:' NEWLINE (INDENT4 '- ' STRING NEWLINE)+;
+dependencies
+    : 'dependencies' STRING
+    ;
 
-file: '- file:' WS STRING NEWLINE;
+IDENTIFIER
+    : [a-zA-Z][a-zA-Z0-9_]*
+    ;
 
-dependencies: 'dependencies:' NEWLINE (INDENT2 '- ' dependency NEWLINE)*;
+FILENAME
+    : [a-zA-Z] [a-zA-Z0-9_]* ('.' [a-zA-Z0-9_]+)?
+    | '.' [a-zA-Z0-9_]+ ('.' [a-zA-Z0-9_]+)?
+    ;
 
-dependency: STRING '==' STRING;
+STRING
+    : '\'' .*? '\''
+    ;
 
-scripts: 'scripts:' NEWLINE (INDENT2 script_name ':' WS script_command NEWLINE)+;
-
-script_name: STRING;
-
-script_command: STRING;
-
-STRING: [a-zA-Z0-9]+;
-
-QUOTED_STRING: '"' STRING '"';
-
-WS: ' ';
-
-NEWLINE: '\r'? '\n';
-
-INDENT1: '  ';
-
-INDENT2: '    ';
-
-INDENT3: '      ';
-
-INDENT4: '        ';
+WS
+    : [ \t\r\n]+ -> skip
+    ;
