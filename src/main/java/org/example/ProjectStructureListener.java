@@ -11,12 +11,16 @@ import java.util.stream.Stream;
 
 class ProjectStructureListener extends ProjectGrammarBaseListener {
     private File currentDirectory;
+    private String resultPath;
 
+    public ProjectStructureListener(String resultPath){
+        this.resultPath=resultPath;
+    }
 
     @Override
     public void enterProject(ProjectGrammarParser.ProjectContext ctx) {
         // Créer le répertoire racine
-        currentDirectory = new File("C:\\Users\\HP\\Desktop\\testTravaill");
+        currentDirectory = new File(this.resultPath);
         currentDirectory.mkdir();
     }
 

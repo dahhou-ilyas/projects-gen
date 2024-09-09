@@ -14,24 +14,26 @@ import java.nio.file.Paths;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        CharStream input = CharStreams.fromFileName("C:\\Users\\HP\\Desktop\\project-init-parse-prj\\project-gen\\src\\main\\java\\org\\example\\test.txt");
+        if (args.length < 2) {
+            System.out.println("Veuillez fournir le chemin du fichier et le chemin de sortie en arguments.");
+            return;
+        }
 
-        // Créer un lexer
+        String filePath = args[0];
+        String outputPath = args[1];
+
+        CharStream input = CharStreams.fromFileName(filePath);
+
         ProjectGrammarLexer lexer = new ProjectGrammarLexer(input);
 
-        // Créer un token stream
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-        // Créer un parser
         ProjectGrammarParser parser = new ProjectGrammarParser(tokens);
 
-        // Obtenir le contexte de l'arbre de parsing
         ParseTree tree = parser.project();
 
-        // Créer notre listener personnalisé
-        ProjectStructureListener listener = new ProjectStructureListener();
+        ProjectStructureListener listener = new ProjectStructureListener(outputPath);
 
-        // Parcourir l'arbre avec notre listener
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(listener, tree);
 
